@@ -1,6 +1,45 @@
-import { TaskEntity, TaskStatusEnum } from "domain/task";
-import { faker } from "@faker-js/faker";
+# Создание сущности для работы с задачей
 
+## TaskEntity - Позволяет создавать задачу, изменять статусы согласно workflow, переименовывать
+
+### Интерфейс
+```typescript
+interface ITask {
+  get name(): string,
+  get description(): string | null,
+  get status(): TaskStatus,
+  get createdAt(): Date,
+  start(): this,
+  done(): this,
+  close(): this,
+  rename(newName:string): this
+}
+```
+|Свойство/метод|Описание
+|-|--|
+|`name`|Название задачи|
+|`description`|Описание задачи|
+|`status`|Статус задачи `<wait/inProgress/done/closed>`|
+|`createdAt`|Название задачи|
+|`start()`|Начать выполнение задачи. Статус задачи переходит в `inProgress`|
+|`done()`|Завершить задачу. Статус задачи переходит в `done`|
+|`close()`|Закрыть задачу. Статус задачи переходит в `close`|
+|`rename(newName)`|Переименовать задачу
+
+### Workflow для статуса
+* default `wait`
+* `wait` -> `inProgress/closed`
+* `inProgress` -> `done/closed`
+* `done` -> `closed`
+
+### При реализации предусмотреть:
+* валидацию данных при создании/изменении объекта
+* корректное поведение при смене статуса
+* выбрасывание исключений при необходимости
+
+### Сущность должна успешно проходить тест 
+> Для тестирования использовать библиотеку `jest`. Для генеарции данных использовать библиотеку `@faker-js/faker`
+```typescript
 // здесь нам важно лишь успешное и корректное создание задачи
 // проверяем работу конструктора класса TaskEntity
 describe("Create task entity", () => {
@@ -155,3 +194,4 @@ describe("Rename task entity", () => {
     );
   });
 });
+```

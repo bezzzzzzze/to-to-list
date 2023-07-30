@@ -16,9 +16,21 @@ interface ITaskData {
   createdAt: Date;
 }
 
-export class TaskEntity {
+interface ITask {
+  get name(): string;
+  get description(): string | null;
+  get status(): TaskStatusEnum;
+  get createdAt(): Date;
+  start(): this;
+  done(): this;
+  close(): this;
+  rename(newName: string): this;
+}
+
+export class TaskEntity implements ITask {
   private data: ITaskData;
   constructor(params: ITaskCreate) {
+    this.validation(params);
     this.data = {
       name: params.name,
       description: params.description,
@@ -27,12 +39,20 @@ export class TaskEntity {
     };
   }
 
+  protected validation(params: ITaskCreate) {
+    if (params.name.length < 2) {
+      throw new Error("Название задачи не может быть короче двух символов");
+    } else if (params.name.length > 255) {
+      throw new Error("Название задачи не может быть длиннее 255ти символов");
+    }
+  }
+
   public get name(): string {
     return this.data.name;
   }
 
   public get description(): string | null {
-    return this.data.description || null;
+    return this.data.description ?? null;
   }
 
   public get status(): TaskStatusEnum {
@@ -44,7 +64,7 @@ export class TaskEntity {
   }
 
   public start(): this {
-    if (this.status !== TaskStatusEnum.wait) {
+    if (this.data.status !== TaskStatusEnum.wait) {
       throw new Error("Задача не может быть начата повторно");
     }
     this.data.status = TaskStatusEnum.inProgress;
@@ -52,7 +72,7 @@ export class TaskEntity {
   }
   public done(): this {
     if (this.data.status !== TaskStatusEnum.inProgress) {
-      throw new Error("Нельзя завешить не начатую задачу");
+      throw new Error("Нельзя завершить не начатую задачу");
     }
     this.data.status = TaskStatusEnum.done;
     return this;
@@ -64,4 +84,12 @@ export class TaskEntity {
     this.data.status = TaskStatusEnum.closed;
     return this;
   }
+
+  public rename(newName: string): this {
+    this.validation({ ...this.data, name: newName });
+    this.data.name = newName;
+    return this;
+  }
 }
+
+export default 10;
