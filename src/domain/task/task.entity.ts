@@ -1,4 +1,4 @@
-enum TaskStatusEnum {
+export enum TaskStatusEnum {
   wait = "wait",
   inProgress = "inProgress",
   done = "done",
@@ -16,7 +16,7 @@ interface ITaskData {
   createdAt: Date;
 }
 
-class TaskEntity {
+export class TaskEntity {
   private data: ITaskData;
   constructor(params: ITaskCreate) {
     this.data = {
