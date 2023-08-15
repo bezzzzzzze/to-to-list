@@ -5,7 +5,7 @@
 ### Пред реализацией необходимо обновить ITask
 ```typescript
 interface ITask {
-  id:string
+  get id(): string
   // ...
 }
 ```
