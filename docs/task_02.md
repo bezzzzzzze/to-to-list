@@ -22,8 +22,8 @@ interface ITaskManager {
   getTask(taskId:string): ITask | null,
   getTasks(): Map<string,ITask>,
   getTasks(ids: string[]): Map<string,ITask>,
-  getTasks(filter: ITaskFilter): Map<string,ITask>,
-  search(query: string, filter?:ITaskFilter): Map<string,ITask>,
+  getTasks(filter: ITasksFilter): Map<string,ITask>,
+  search(query: string, filter?:ITasksFilter): Map<string,ITask>,
   deleteTask(taskId:string): boolean,
 }
 ```
